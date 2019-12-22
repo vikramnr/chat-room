@@ -12,15 +12,17 @@ const publicPath = path.join(__dirname, '../public');
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
-    socket.emit('newMessage', {
-        from: `server`,
-        text: 'hello der'
-    })
+
     socket.on('createMessage', (message) => {
-        io.emit('newMessage',{
-            from: message.from,
-            text: message.text
+        io.emit('newMessage', {
+            from: 'admin',
+            text: `Hello ${message.from} !!!`
         })
+        socket.broadcast.emit('newMessage', {
+            from: 'admin',
+            text: `${message.from} joined and sent this message ${message.text}`
+        });
+
     })
 });
 
