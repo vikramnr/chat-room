@@ -17,6 +17,10 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
     socket.emit('newMessage', generateMessage('admin', 'Welcome to chat app'))
     socket.broadcast.emit('newMessage', generateMessage('admin', 'new user joined chat room'));
+    socket.on('createMessage', (message, cb) => {
+        io.emit('newMessage', generateMessage(message.from, message.text));
+        cb('hello ack.,');
+    });
 });
 
 io.on('disconnect', (_socket) => {
