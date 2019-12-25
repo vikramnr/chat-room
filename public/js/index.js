@@ -10,10 +10,10 @@ socket.on('connect', () => {
 socket.on('disconnect', () => {
     console.log('disconneted from server');
 })
-const send = document.getElementById('send');
-send.addEventListener('click', (e) => {
-    socket.emit('createMessage', {
-        from: 'Andrew',
-        text: document.getElementById('message').value
-    });
-});
+// const send = document.getElementById('send');
+// send.addEventListener('click', (e) => {
+//     socket.emit('createMessage', {
+//         from: 'Andrew',
+//         text: document.getElementById('message').value
+//     });
+// });
