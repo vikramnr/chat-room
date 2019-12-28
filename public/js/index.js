@@ -1,6 +1,7 @@
 var socket = io();
 const send = document.getElementById('send');
-const shareLocation = document.getElementById('location');
+const shareLocation = document.getElementById('send-location');
+const message = document.getElementById('message');
 // connect user and updates message to screen
 socket.on('connect', () => {
     console.log('user connected');
@@ -33,9 +34,9 @@ send.addEventListener('click', (e) => {
     e.preventDefault();
     socket.emit('createMessage', {
         from: 'Andrew',
-        text: document.getElementById('message').value
+        text: message.value
     }, function (data) {
-        console.log('hi got it', data);
+        message.value =''
     });
 });
 
@@ -45,17 +46,20 @@ shareLocation.addEventListener('click', (e) => {
         timeout: 5000,
         maximumAge: 0
     };
-
+    shareLocation.disabled = true;
+    message.value = 'Fetching location...'
     function success(pos) {
         var crd = pos.coords;
         socket.emit('createLocationMessage', {
             latitude: pos.coords.latitude,
             longitude: pos.coords.longitude
         });
+        shareLocation.disabled = false;
+        message.value =''
     }
 
     function error(err) {
-        console.warn(`ERROR(${err.code}): ${err.message}`);
+        alert('Unable to fetch location')
     }
 
     navigator.geolocation.getCurrentPosition(success, error, options);

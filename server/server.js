@@ -20,7 +20,7 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('newMessage', generateMessage('admin', 'new user joined chat room'));
     socket.on('createMessage', (message, cb) => {
         io.emit('newMessage', generateMessage(message.from, message.text));
-        cb('hello ack.,');
+        cb();
     });
     socket.on('createLocationMessage', (coords) => {
         io.emit('newMessage', generateLocationMessage('admin',coords.latitude, coords.longitude));
