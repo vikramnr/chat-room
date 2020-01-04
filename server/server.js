@@ -16,14 +16,14 @@ const publicPath = path.join(__dirname, '../public');
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
-    socket.emit('newMessage', generateMessage('admin', 'Welcome to chat app'))
-    socket.broadcast.emit('newMessage', generateMessage('admin', 'new user joined chat room'));
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to chat app'))
+    socket.broadcast.emit('newMessage', generateMessage('Admin', 'new user joined chat room'));
     socket.on('createMessage', (message, cb) => {
         io.emit('newMessage', generateMessage(message.from, message.text));
         cb();
     });
     socket.on('createLocationMessage', (coords) => {
-        io.emit('newMessage', generateLocationMessage('admin',coords.latitude, coords.longitude));
+        io.emit('newMessage', generateLocationMessage('Admin',coords.latitude, coords.longitude));
     })
 });
 

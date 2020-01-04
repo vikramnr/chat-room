@@ -1,7 +1,16 @@
 var socket = io();
+// btn for sharing message
 const send = document.getElementById('send');
+// btn for sharing location
 const shareLocation = document.getElementById('send-location');
+// 
 const message = document.getElementById('message');
+// template for message
+const messageTemplate = document.getElementById('message-template').textContent;
+// template for location
+const locationTemplate = document.getElementById('location-message-template').textContent;
+// DOM where text is getting attached
+const text = document.getElementById('text');
 // connect user and updates message to screen
 socket.on('connect', () => {
     console.log('user connected');
@@ -10,18 +19,37 @@ socket.on('connect', () => {
         // new if..else case for checking if we have location or text
         let parent;
         if (message.text) {
-            parent = document.createElement("div")
-            parent.append(`${message.from}: ${message.text}`)
-            document.getElementById('text').appendChild(parent)
+            // parent = document.createElement("div")
+            // parent.append(`${moment(message.CreatedAt).format('h:mm a')} ${message.from}: ${message.text}`)
+            // document.getElementById('text').innerHTML = html
+            // document.getElementById('text').appendChild
+            let formattedTime = moment(message.CreatedAt).format('h:mm a');
+            let html = Mustache.render(messageTemplate, {
+                text: message.text,
+                from: message.from,
+                createdAt: formattedTime
+            });
+            let temp = document.createElement('div');
+            temp.innerHTML = html;
+            text.appendChild(temp);
         } else {
-            parent = document.createElement("a")
-            parent.href = `${message.url}`;
-            parent.target = `_blank`
-            span = document.createElement('span')
-            span.append(`${message.from}: `)
-            parent.innerHTML = "View Location"; 
-            span.append(parent)
-            document.getElementById('text').appendChild(span)
+            let formattedTime = moment(message.CreatedAt).format('h:mm a');
+            let html = Mustache.render(locationTemplate, {
+                from: message.from,
+                url: message.url,
+                createdAt: formattedTime
+            });
+            let temp = document.createElement('div');
+            temp.innerHTML = html;
+            text.appendChild(temp);
+            // parent = document.createElement("a")
+            // parent.href = `${message.url}`;
+            // parent.target = `_blank`
+            // span = document.createElement('span')
+            // span.append(`${moment(message.CreatedAt).format('h:mm a')} ${message.from}: `)
+            // parent.innerHTML = "View Location";
+            // span.append(parent)
+            // document.getElementById('text').innerHTML = html
         }
     });
 });
@@ -36,10 +64,10 @@ send.addEventListener('click', (e) => {
         from: 'Andrew',
         text: message.value
     }, function (data) {
-        message.value =''
+        message.value = ''
     });
 });
-
+// Location sharing API from DOM // MDN Docs
 shareLocation.addEventListener('click', (e) => {
     var options = {
         enableHighAccuracy: true,
@@ -48,6 +76,7 @@ shareLocation.addEventListener('click', (e) => {
     };
     shareLocation.disabled = true;
     message.value = 'Fetching location...'
+
     function success(pos) {
         var crd = pos.coords;
         socket.emit('createLocationMessage', {
@@ -55,7 +84,7 @@ shareLocation.addEventListener('click', (e) => {
             longitude: pos.coords.longitude
         });
         shareLocation.disabled = false;
-        message.value =''
+        message.value = ''
     }
 
     function error(err) {
