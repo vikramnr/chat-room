@@ -1,59 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Chat Room</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Join | Chat App</title>
     <link href="https://www.fontify.me/wf/1449b08cbb5cbad720c80b2d4b46c017" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="/css/index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
 </head>
 
-<body class="chat">
-    <div class="chat__sidebar">
-        <h3>People</h3>
-        <div id="user"></div>
-    </div>
-    <div class="chat__main">
-        <ol id="messages" class="chat__messages" id="text"></ol>
-        <div class="chat__footer">
-            <form id="message-form">
-                <input name="message" type="text" id="message" autofocus autocomplete="off">
-                <button id='send'>Send message</button>
-            </form>
-            <button id="send-location">Share your location</button>
-        </div>
-        <script id="message-template" type="text/template">
-            <li class="message">
-                <div class="message__title">
-                  <h4>{{from}}</h4>
-                  <span>{{createdAt}}</span>
-                </div>
-                <div clas="message__body">
-                  <p>{{text}}</p>
-                </div>
-                </li>            
-        </script>
-        <script id="location-message-template" type="text/template">
-            <li class="message">
-            <div class="message__title">
-              <h4>{{from}}</h4>
-              <span>{{createdAt}}</span>
+<body class="centered-form">
+    <div class="centered-form__form">
+        <form action="./chat.html">
+            <div class="form-field">
+                <h3>Join a chat</h3>
+                <!-- <small>or Start a new one...</small> -->
             </div>
-            <div clas="message__body">
-              <p>
-                <a href="{{url}}" target="_blank">My current location</a>
-              </p>
+            <div class="form-field">
+                <label for="">Display Name</label>
+                <input type="text" name="display name" id="" autofocus />
             </div>
-            </li>
-        </script>
+            <div class="form-field">
+                <label for="">Room Name</label>
+                <input type="text" name="room" id="">
+            </div>
+            <div class="form-field">
+                <button>Join</button>
+            </div>
+        </form>
     </div>
 </body>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/libs/jquery-3.3.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-<script src="/js/index.js"></script>
-<script src="/js/libs/mustache.js"></script>
 
 </html>
