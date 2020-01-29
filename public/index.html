@@ -16,7 +16,7 @@
         <div id="user"></div>
     </div>
     <div class="chat__main">
-        <ol class="chat__messages" id="text"></ol>
+        <ol id="messages" class="chat__messages" id="text"></ol>
         <div class="chat__footer">
             <form id="message-form">
                 <input name="message" type="text" id="message" autofocus autocomplete="off">
@@ -51,6 +51,7 @@
     </div>
 </body>
 <script src="/socket.io/socket.io.js"></script>
+<script src="/js/libs/jquery-3.3.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <script src="/js/index.js"></script>
 <script src="/js/libs/mustache.js"></script>

@@ -1,6 +1,23 @@
 var socket = io();
 // btn for sharing message
 const send = document.getElementById('send');
+// scroll function
+function scrollToBottom() {
+    // selectors
+    var messages = jQuery('#messages');
+    var newMessage = messages.children('li:last-child');
+    // Heights
+    var clientHeight = messages.prop('clientHeight');
+    var scrollTop = messages.prop('scrollTop');
+    var scrollHeight = messages.prop('scrollHeight');
+    var newMessageHeight = newMessage.innerHeight();
+    var lastMessageHeight = newMessage.prev().innerHeight();
+  
+    if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+      messages.scrollTop(scrollHeight);
+     }
+  
+}
 // btn for sharing location
 const shareLocation = document.getElementById('send-location');
 // 
@@ -10,7 +27,8 @@ const messageTemplate = document.getElementById('message-template').textContent;
 // template for location
 const locationTemplate = document.getElementById('location-message-template').textContent;
 // DOM where text is getting attached
-const text = document.getElementById('text');
+const text = document.getElementById('messages');
+
 // connect user and updates message to screen
 socket.on('connect', () => {
     console.log('user connected');
@@ -31,7 +49,9 @@ socket.on('connect', () => {
             });
             let temp = document.createElement('div');
             temp.innerHTML = html;
+            console.log(text);
             text.appendChild(temp);
+            scrollToBottom();
         } else {
             let formattedTime = moment(message.CreatedAt).format('h:mm a');
             let html = Mustache.render(locationTemplate, {
@@ -42,6 +62,7 @@ socket.on('connect', () => {
             let temp = document.createElement('div');
             temp.innerHTML = html;
             text.appendChild(temp);
+            scrollToBottom();
             // parent = document.createElement("a")
             // parent.href = `${message.url}`;
             // parent.target = `_blank`
