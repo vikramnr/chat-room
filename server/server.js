@@ -5,10 +5,14 @@ const socket = require('socket.io');
 const app = express();
 var server = http.createServer(app);
 var io = socket(server);
-var {
+const {
     generateMessage,
     generateLocationMessage
 } = require('./utils/message');
+const {
+    isRealString
+} = require('./utils/validation');
+
 
 const PORT = process.env.PORT || 3000
 
@@ -18,12 +22,19 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
     socket.emit('newMessage', generateMessage('Admin', 'Welcome to chat app'))
     socket.broadcast.emit('newMessage', generateMessage('Admin', 'new user joined chat room'));
+    // when user join the room
+    socket.on('join', (params, callback) => {
+        if (!isRealString(params.name) || !isRealString(params.room)) {
+            callback('Name and Room Name are required');
+        }
+        callback();
+    });
     socket.on('createMessage', (message, cb) => {
         io.emit('newMessage', generateMessage(message.from, message.text));
         cb();
     });
     socket.on('createLocationMessage', (coords) => {
-        io.emit('newMessage', generateLocationMessage('Admin',coords.latitude, coords.longitude));
+        io.emit('newMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
     })
 });
 

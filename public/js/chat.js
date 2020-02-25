@@ -4,18 +4,18 @@ const send = document.getElementById('send');
 // scroll function
 function scrollToBottom() {
     // selectors
-    var messages = jQuery('#messages');
-    var newMessage = messages.children('li:last-child');
-    // Heights
-    var clientHeight = messages.prop('clientHeight');
-    var scrollTop = messages.prop('scrollTop');
-    var scrollHeight = messages.prop('scrollHeight');
-    var newMessageHeight = newMessage.innerHeight();
-    var lastMessageHeight = newMessage.prev().innerHeight();
+    // var messages = jQuery('#messages');
+    // var newMessage = messages.children('li:last- child');
+    // // Heights
+    // var clientHeight = messages.prop('clientHeight');
+    // var scrollTop = messages.prop('scrollTop');
+    // var scrollHeight = messages.prop('scrollHeight');
+    // var newMessageHeight = newMessage.innerHeight();
+    // var lastMessageHeight = newMessage.prev().innerHeight();
   
-    if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
-      messages.scrollTop(scrollHeight);
-     }
+    // if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+    //   messages.scrollTop(scrollHeight);
+    //  }
   
 }
 // btn for sharing location
@@ -32,6 +32,17 @@ const text = document.getElementById('messages');
 // connect user and updates message to screen
 socket.on('connect', () => {
     console.log('user connected');
+    var params = jQuery.deparam(window.location.search);
+    console.log(params);
+    socket.emit('join',params, function(err){
+        if(err) {
+            alert(err);
+            window.location.href = '/'
+            
+        } else{
+            console.log('No error');
+        }
+    });
     socket.on('newMessage', (message) => {
         console.log(message);
         // new if..else case for checking if we have location or text
