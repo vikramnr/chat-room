@@ -20,13 +20,18 @@ const publicPath = path.join(__dirname, '../public');
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
-    socket.emit('newMessage', generateMessage('Admin', 'Welcome to chat app'))
-    socket.broadcast.emit('newMessage', generateMessage('Admin', 'new user joined chat room'));
+    // socket.emit('newMessage', generateMessage('Admin', 'Welcome to chat app'))
+    // socket.broadcast.emit('newMessage', generateMessage('Admin', 'new user joined chat room'));
     // when user join the room
     socket.on('join', (params, callback) => {
         if (!isRealString(params.name) || !isRealString(params.room)) {
             callback('Name and Room Name are required');
         }
+        socket.join(params.room);
+
+        socket.emit('newMessage', generateMessage('Admin', 'Welcome to Chat App'));
+        socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has arrived`));
+        
         callback();
     });
     socket.on('createMessage', (message, cb) => {
