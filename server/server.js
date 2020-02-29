@@ -12,8 +12,10 @@ const {
 const {
     isRealString
 } = require('./utils/validation');
-
-
+const {
+    User
+} = require('./utils/user');
+var Users = new User();
 const PORT = process.env.PORT || 3000
 
 const publicPath = path.join(__dirname, '../public');
@@ -28,18 +30,32 @@ io.on('connection', (socket) => {
             callback('Name and Room Name are required');
         }
         socket.join(params.room);
-
+        Users.removeUser(socket.id);
+        Users.addUser(socket.id, params.name, params.room)
         socket.emit('newMessage', generateMessage('Admin', 'Welcome to Chat App'));
+        io.to(params.room).emit('updateUserList', Users.getUserList(params.room));
         socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has arrived`));
-        
         callback();
     });
+    // create new message
     socket.on('createMessage', (message, cb) => {
-        io.emit('newMessage', generateMessage(message.from, message.text));
+        var user = Users.getUser(socket.id);
+        io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
         cb();
     });
+    // create new location message
     socket.on('createLocationMessage', (coords) => {
-        io.emit('newMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+        var user = Users.getUser(socket.id);
+        io.to(user.room).emit('newMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+    })
+    // disconnect user from
+    socket.on('disconnect', function () {
+        var user = Users.removeUser(socket.id)
+
+        if (user) {
+            io.to(user.room).emit('updateUserList', Users.getUserList(user.room));
+            io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left /.`));
+        }
     })
 });
 

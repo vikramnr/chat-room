@@ -12,11 +12,11 @@ function scrollToBottom() {
     // var scrollHeight = messages.prop('scrollHeight');
     // var newMessageHeight = newMessage.innerHeight();
     // var lastMessageHeight = newMessage.prev().innerHeight();
-  
+
     // if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
     //   messages.scrollTop(scrollHeight);
     //  }
-  
+
 }
 // btn for sharing location
 const shareLocation = document.getElementById('send-location');
@@ -34,12 +34,12 @@ socket.on('connect', () => {
     console.log('user connected');
     var params = jQuery.deparam(window.location.search);
     console.log(params);
-    socket.emit('join',params, function(err){
-        if(err) {
+    socket.emit('join', params, function (err) {
+        if (err) {
             alert(err);
             window.location.href = '/'
-            
-        } else{
+
+        } else {
             console.log('No error');
         }
     });
@@ -86,6 +86,23 @@ socket.on('connect', () => {
     });
 });
 
+// updates user list when user enter\leaves room
+socket.on('updateUserList', function (users) {
+    // select and reset user everytime whenever there is change to user list
+    var usersElement = document.getElementById('users')
+    usersElement.innerHTML='';
+    // add ordered list with each user 
+    var temp = document.createElement('ol');
+    users.forEach(user => {
+        var li = document.createElement('li')
+        li.innerText = user
+        temp.appendChild(li)
+    });
+    // append them to final user element
+    usersElement.appendChild(temp);
+    
+});
+
 socket.on('disconnect', () => {
     console.log('disconneted from server');
 })
@@ -93,7 +110,6 @@ socket.on('disconnect', () => {
 send.addEventListener('click', (e) => {
     e.preventDefault();
     socket.emit('createMessage', {
-        from: 'Andrew',
         text: message.value
     }, function (data) {
         message.value = ''
